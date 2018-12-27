@@ -1,0 +1,28 @@
+{
+    "name": "softoneasia/laravelupload",
+    "description": "Softone Asia Uploader",
+    "homepage": "https://github.com/SoftoneAsia/LaravelUpload",
+    "license": "GPLv2",
+    "keywords": [
+        "laravel",
+        "package",
+        "softone"
+    ],
+    "authors": [
+        {
+            "name": "Thai Tran",
+            "email": "thaitran@softone.asia"
+        }
+    ],
+    "require": {
+        "php": ">=5.6.4"
+    },
+    "autoload": {
+        "classmap": [
+            "src/"
+        ],
+        "psr-4": {
+            "SOA\\LaravelUpload\\": "src/"
+        }
+    }
+}
