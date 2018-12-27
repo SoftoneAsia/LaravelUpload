@@ -2,6 +2,7 @@
     "name": "softoneasia/laravelupload",
     "description": "Softone Asia Uploader",
     "homepage": "https://github.com/SoftoneAsia/LaravelUpload",
+    "minimum-stability": "dev"
     "keywords": [
         "laravel",
         "package",
