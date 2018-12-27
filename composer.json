@@ -2,7 +2,6 @@
     "name": "softoneasia/laravelupload",
     "description": "Softone Asia Uploader",
     "homepage": "https://github.com/SoftoneAsia/LaravelUpload",
-    "license": "GPLv2",
     "keywords": [
         "laravel",
         "package",
@@ -22,7 +21,17 @@
             "src/"
         ],
         "psr-4": {
-            "SOA\\LaravelUpload\\": "src/"
+            "SoftoneAsia\\LaravelUpload\\": "./src/"
+        },
+        "files": [
+            "src/SOUploader.php"
+        ]
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+                "SoftoneAsia\\LaravelUpload\\SOUploadProvider"
+            ]
         }
     }
 }
