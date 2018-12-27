@@ -130,6 +130,7 @@ class SOUploader {
             }
         }
     }
+    
     private static function makeDirBySize($sizes){
         foreach($sizes as $key => $val){
             $outputDir = _CONFIG['outputDir'].'/images/'.$key;
@@ -141,20 +142,32 @@ class SOUploader {
     
     private static function init() {
         //Khởi tạo thư mục theo loại
-        self::makeDirByType(_CONFIG['outputType']);
-        if(!file_exists(_CONFIG['outputDir'])){
-            mkdir(_CONFIG['outputDir'], 0777, true);
-        }
+        // self::makeDirByType(_CONFIG['outputType']);
+        // if(!file_exists(_CONFIG['outputDir'])){
+        //     mkdir(_CONFIG['outputDir'], 0777, true);
+        // }
     }
 
-    private static function allowFileType($file){}
-    private static function allowFileSize($file){}
-    private static function setOutputName($file, $type){}
+    private static function allowFileType($file, $type){
+        $x = array_filter(_MIMETYPE[$type], function($item) use ($file){
+            return $item == $file->getMimeType();
+        });
+        //dd($file, $type, $x);
+        if(count($x)>0) return true;
+        else return false;
+    }
+
+    private static function allowFileSize($file, $type){
+        $filesize = $file->getClientSize() / 1024 / 1024;
+        if($filesize <= _CONFIG['maxSize'][$type]) return true;
+        else return false;
+    }
 
     private static function uploadImage($file, $option){
-        $oName = pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME);
-        $oMime = $file->getMimeType();
-        $dir = _CONFIG['outputDir'].'/images/';
+        $dir = _CONFIG['outputDir'].'/images';
+        if(!file_exists($dir)){
+            mkdir($dir, 0777, true);
+        }
         //dd($oName, $oMime, $file, $option, _CONFIG);
         
         //Tạo tên file output
@@ -180,29 +193,41 @@ class SOUploader {
             $filePath = "{$fileName}_".date('Y_m_d_').time().".".$file->getClientOriginalExtension();
         }
         
-        //Tạo file theo các kích cỡ
-        foreach(_CONFIG['outputSize'] as $key => $size){
-            $outputDir = $dir.'/'.$key;
-            if(!file_exists($outputDir)){
-                mkdir($outputDir, 0777, true);
-            }
-            Image::make($file)->resize($size['w'],$size['h'])->save($outputDir.'/'.$filePath);
-        }
+        //Check Allow Condition Upload
+        $error = [];
+        if(!self::allowFileSize($file, $option['type']))
+            $error[] = __('soupload.filesize_validate');
+        if(!self::allowFileType($file, $option['type']))
+            $error[] = __('soupload.filetype_validate');
 
-        dd($filePath);
-        // if($width && $height)
-        //     Image::make($file)->resize($width,$height)->save($dir.'/'.$filePath);
-        // else
-        //     Image::make($file)->save($dir.'/'.$filePath);
-            
-        // return ['filepath'=>$dir.'/'.$filePath,'filename'=>$filePath];
+        if(count($error)==0){
+            //Tạo file theo các kích cỡ
+            foreach(_CONFIG['outputSize'] as $key => $size){
+                $outputDir = $dir.'/'.$key.'/'.date('Y').'/'.date('n').'/';
+                if(!file_exists($outputDir)){
+                    mkdir($outputDir, 0777, true);
+                }
+                Image::make($file)->resize($size['w'], null, function ($constraint) {
+                    $constraint->aspectRatio();
+                })->save($outputDir.$filePath);
+            }
+
+            $dirOriginal = $dir.'/original/'.date('Y').'/'.date('n');
+            if(!file_exists($dirOriginal)){
+                mkdir($dirOriginal, 0777, true);
+            }
+            Image::make($file)->save($dirOriginal.'/'.$filePath);
+
+            return ['status'=>true, 'filename'=>$filePath, 'filename-date'=>date('Y').'/'.date('n').'/'.$filePath];
+        }else{
+            return ['status'=>true, 'error'=>$error];
+        }
+        
     
     }
-    private static function uploadFile($file, $option){
-        dd($file, $option);
-    }
-    private static function getMimeType($mime){
 
+    private static function uploadFile($file, $option){
+       
     }
 
     public static function SOTest(){
@@ -216,11 +241,14 @@ class SOUploader {
             'name' => $name,
             'overwrite' => $overwrite
         ];
+        $result = [];
         switch($type){
-            case 'image': return self::uploadImage($file, $option);
+            case 'image': $result = self::uploadImage($file, $option); break;
             case 'audio': echo 'audio'; break;
             case 'video': echo 'video'; break;
             default: echo 'file';
         }
+        
+        return $result;
     }
 }
