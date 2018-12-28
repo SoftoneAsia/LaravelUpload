@@ -31,6 +31,8 @@ $ php artisan vendor:publish --tag=config
 ### Code Examples
 
 ```php
+use SoftoneAsia\LaravelUpload\SOUploader;
+
 // Upload image
 $file = $request->file('image');
 SOUploader::upload($file,'image')
