@@ -26,11 +26,15 @@ function getFilePath($path, $size = 'thumb'){
     }
 }
 
+function getImagePath($path, $size = 'thumb'){
+    return '/_uploads/images/'.$size.'/'.$path;
+}
+
 function getImage($path, $option=[]){
     $size = (isset($option['size'])) ? $option['size'] : 'thumb';
     $title = (isset($option['title'])) ? $option['title'] : $path;
     $className = (isset($option['class'])) ? $option['class'] : '';
 
-    $str = '<img src="'.getFilePath($path, $size).'" alt="'.$title.'" title="'.$title.'" class="'.$className.'"/>';
+    $str = '<img src="'.getImagePath($path, $size).'" alt="'.$title.'" title="'.$title.'" class="'.$className.'"/>';
     return $str;
 }
