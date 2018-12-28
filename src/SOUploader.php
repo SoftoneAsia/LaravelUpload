@@ -77,6 +77,7 @@ define("_MIMETYPE", array(
     'video'=>[
         'qt' => 'video/quicktime',
         'mov' => 'video/quicktime',
+        'mp4' => 'video/mp4'
     ],
 
     'audio'=>[
@@ -184,9 +185,9 @@ class SOUploader {
         if($option['overwrite'])
         {
             $filePath = "{$fileName}.".$file->getClientOriginalExtension();
-            if(File::exists("{$dir}/{$fileName}")) {
-                File::delete("{$dir}/{$fileName}");
-            }
+            // if(File::exists("{$dir}/{$fileName}")) {
+            //     File::delete("{$dir}/{$fileName}");
+            // }
         }
         else
         {
@@ -218,16 +219,61 @@ class SOUploader {
             }
             Image::make($file)->save($dirOriginal.'/'.$filePath);
 
-            return ['status'=>true, 'filename'=>$filePath, 'filename-date'=>date('Y').'/'.date('n').'/'.$filePath];
+            return ['status'=>true, 'filename'=>$filePath, 'fullpath'=>date('Y').'/'.date('n').'/'.$filePath];
         }else{
             return ['status'=>true, 'error'=>$error];
         }
-        
-    
     }
 
     private static function uploadFile($file, $option){
-       
+        $dir = _CONFIG['outputDir'].'/'.$option['type'].'s';
+        if(!file_exists($dir)){
+            mkdir($dir, 0777, true);
+        }
+        //dd($oName, $oMime, $file, $option, _CONFIG);
+        
+        //Tạo tên file output
+        if($option['name'])
+            $fileName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $option['name']);
+        else{
+            if(_CONFIG['rename'])
+                $fileName = time().'_'.rand(10,99);
+            else
+                $fileName = preg_replace('/[^A-Za-z0-9_\-]/', '_', $file->getClientOriginalName());
+        }
+        
+        //Thay đổi tên file nếu tên file đã tồn tại
+        if($option['overwrite'])
+        {
+            $filePath = "{$fileName}.".$file->getClientOriginalExtension();
+            // if(File::exists("{$dir}/{$fileName}")) {
+            //     File::delete("{$dir}/{$fileName}");
+            // }
+        }
+        else
+        {
+            $filePath = "{$fileName}_".date('Y_m_d_').time().".".$file->getClientOriginalExtension();
+        }
+        
+        //Check Allow Condition Upload
+        $error = [];
+        if(!self::allowFileSize($file, $option['type']))
+            $error[] = __('soupload.filesize_validate');
+        if(!self::allowFileType($file, $option['type']))
+            $error[] = __('soupload.filetype_validate');
+
+        if(count($error) == 0){
+            //dd($dir.'/'.$filePath);
+            $outputDir = $dir.'/'.date('Y').'/'.date('n').'/';
+            if(!file_exists($outputDir)){
+                mkdir($outputDir, 0777, true);
+            }
+            //dd($file->getPathName());
+            move_uploaded_file($file->getPathName(), $outputDir.$filePath);
+            return ['status'=>true, 'filename'=>$filePath, 'fullpath'=> $outputDir.$filePath];
+        }else{
+            return ['status'=>true, 'error'=>$error];
+        }
     }
 
     public static function SOTest(){
@@ -244,9 +290,9 @@ class SOUploader {
         $result = [];
         switch($type){
             case 'image': $result = self::uploadImage($file, $option); break;
-            case 'audio': echo 'audio'; break;
-            case 'video': echo 'video'; break;
-            default: echo 'file';
+            case 'audio': $result = self::uploadFile($file, $option); break;
+            case 'video': $result = self::uploadFile($file, $option); break;
+            default: $result = self::uploadFile($file, $option);
         }
         
         return $result;

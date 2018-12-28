@@ -25,7 +25,8 @@
             "SoftoneAsia\\LaravelUpload\\": "./src/"
         },
         "files": [
-            "src/SOUploader.php"
+            "src/SOUploader.php",
+            "src/helper.php"
         ]
     },
     "extra": {
