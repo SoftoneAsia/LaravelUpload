@@ -7,30 +7,30 @@ use Intervention\Image\ImageManagerStatic as Image;
 define("_CONFIG",array(
     'outputType' => [
         'image',
-        'photo',
+        'audio',
         'video',
         'document'
     ],
     'outputSize' =>  [
         'thumb' => [
-            'w' => 150, 'h'=> 150
+            'w' => config('so_upload.thumb_size'), 'h'=> config('so_upload.thumb_size')
         ],
         'medium' => [
-            'w' => 300, 'h'=> 300
+            'w' => config('so_upload.medium_size'), 'h'=> config('so_upload.medium_size')
         ],
         'medium_large' => [
-            'w' => 768, 'h'=> 768
+            'w' => config('so_upload.medium_large_size'), 'h'=> config('so_upload.medium_large_size')
         ],
         'large' => [
-            'w' => 1024, 'h'=> 1024
+            'w' => config('so_upload.large_size'), 'h'=> config('so_upload.large_size')
         ]
     ],
-    'outputDir' => '_uploads',
+    'outputDir' => config('so_upload.upload_directory'),
     'maxSize'   => [
-        'image' => 2,
-        'photo' => 10,
-        'video' => 200,
-        'document'  => 20
+        'image' => config('so_upload.max_size_image'),
+        'audio' => config('so_upload.max_size_audio'),
+        'video' => config('so_upload.max_size_video'),
+        'document'  => config('so_upload.max_size_document')
     ],
     'rename'    => true
 ));

@@ -21,8 +21,13 @@ class SOUploadProvider extends ServiceProvider
 
                 
         // $this->loadMigrationsFrom(__DIR__.'/database/migrations');
-
         
+        $this->publishes([
+            __DIR__.'/config.php' => config_path('so_upload.php'),
+        ]);
+
+        //$this->loadTranslationsFrom(__DIR__.'/path/to/translations', 'courier');
+
     }
 
     /**
