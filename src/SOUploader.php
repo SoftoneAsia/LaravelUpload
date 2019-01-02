@@ -4,7 +4,7 @@ namespace SoftoneAsia\LaravelUpload;
 use Illuminate\Support\Facades\File;
 use Intervention\Image\ImageManagerStatic as Image;
 
-define("_CONFIG",array(
+define("_CONFIG", serialize(array(
     'outputType' => [
         'image',
         'audio',
@@ -33,9 +33,9 @@ define("_CONFIG",array(
         'document'  => 100
     ],
     'rename'    => true
-));
+)));
 
-define("_MIMETYPE", array(
+define("_MIMETYPE", serialize(array(
     'file'=>[
         'txt' => 'text/plain',
         'htm' => 'text/html',
@@ -120,7 +120,7 @@ define("_MIMETYPE", array(
         'wma' => 'audio/x-ms-wma',
         'xspf' => 'application/xspf+xml'
     ]
-));
+)));
 
 class SOUploader {
     private static function makeDirByType($types){
