@@ -13,24 +13,24 @@ define("_CONFIG",array(
     ],
     'outputSize' =>  [
         'thumb' => [
-            'w' => config('so_upload.thumb_size'), 'h'=> config('so_upload.thumb_size')
+            'w' => 150, 'h'=> 150
         ],
         'medium' => [
-            'w' => config('so_upload.medium_size'), 'h'=> config('so_upload.medium_size')
+            'w' => 300, 'h'=> 300
         ],
         'medium_large' => [
-            'w' => config('so_upload.medium_large_size'), 'h'=> config('so_upload.medium_large_size')
+            'w' => 768, 'h'=> 768
         ],
         'large' => [
-            'w' => config('so_upload.large_size'), 'h'=> config('so_upload.large_size')
+            'w' => 1200, 'h'=> 1200
         ]
     ],
-    'outputDir' => config('so_upload.upload_directory'),
+    'outputDir' => 'public/_uploads',
     'maxSize'   => [
-        'image' => config('so_upload.max_size_image'),
-        'audio' => config('so_upload.max_size_audio'),
-        'video' => config('so_upload.max_size_video'),
-        'document'  => config('so_upload.max_size_document')
+        'image' => 2,
+        'audio' => 10,
+        'video' => 100,
+        'document'  => 100
     ],
     'rename'    => true
 ));
