@@ -28,12 +28,5 @@
             "src/SOUploader.php",
             "src/helper.php"
         ]
-    },
-    "extra": {
-        "laravel": {
-            "providers": [
-                "SoftoneAsia\\LaravelUpload\\SOUploadProvider"
-            ]
-        }
     }
 }
